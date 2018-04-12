@@ -1,17 +1,10 @@
-package com.temp.gui;
-
-import com.sun.org.omg.CORBA.ExceptionDescription;
+package tic.tac.toe;
 
 import javax.swing.*;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.nio.channels.InterruptedByTimeoutException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by jonas on 2018-04-12.

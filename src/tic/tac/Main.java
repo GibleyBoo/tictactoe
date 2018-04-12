@@ -1,5 +1,5 @@
-package com.temp;
-import com.temp.gui.Board;
+package tic.tac;
+import tic.tac.toe.Board;
 
 
 public class Main {
