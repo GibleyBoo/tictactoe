@@ -3,8 +3,13 @@ package com.temp.gui;
 import com.sun.org.omg.CORBA.ExceptionDescription;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.nio.channels.InterruptedByTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,6 +29,7 @@ public class Board {
     private JButton button8;
     private JButton button9;
     private JLabel currentPlayer;
+    private JLabel turnsLeft;
 
 
     public Board() {
@@ -32,36 +38,41 @@ public class Board {
             button.addActionListener(new AL());
             button.setText("-");
         }
+    }
 
-        currentPlayer.setText("X");
-        while (!this.check()) {
-                try {
-                    this.wait(55555);
-                } catch (InterruptedException e) {
-                    if (currentPlayer.getText().equals("X")) {
-                        currentPlayer.setText("O");
-                    } else {
-                        currentPlayer.setText("X");
-                    }
-                }
-            }
-        }
 
     public static void main(String[] args) {
-        try {
+            Board board = new Board();
             JFrame frame = new JFrame("Board");
-            frame.setContentPane(new Board().wrapper);
+            frame.setContentPane(board.wrapper);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();
             frame.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            board.currentPlayer.setText("X");
+            board.turnsLeft.setText("5");
+            do {} while (!board.check() || Integer.parseInt(board.turnsLeft.getText()) > 0);
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+
     }
 
     private boolean check() {
         ArrayList<ArrayList<String>> rows = this.getRows();
-        return true;
+        for (ArrayList<String> row : rows) {
+            String box0 = row.get(0);
+            if (box0.equals("-")) {
+                continue;
+            }
+            byte k = 0;
+            for (String box : row) {
+                if (box0.equals(box)) {
+                    k++;
+                }
+            }
+            if (k==3) {
+                return true;
+            }
+        }
+        return false;
     }
     private ArrayList<ArrayList<String>> getRows() {
         ArrayList<ArrayList<String>> rows = new ArrayList<>(8);
@@ -104,16 +115,19 @@ public class Board {
                 pressedButton.setText(currentPlayer.getText());
                 pressedButton.setEnabled(false);
 
+                if (currentPlayer.getText().equals("X")) {
+                    currentPlayer.setText("O");
+                } else {
+                    currentPlayer.setText("X");
+                }
+
+                turnsLeft.setText(Integer.toString(Integer.parseInt(turnsLeft.getText()) - 1));
 
             } catch (ClassCastException g) {
                 g.printStackTrace();
             }
-            /*try {
-                System.out.println(e.getActionCommand());
-            } catch (Exception g) {
-                g.printStackTrace();
-            }*/
         }
+
     }
 
 
