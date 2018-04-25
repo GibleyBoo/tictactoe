@@ -8,29 +8,32 @@ import java.util.ArrayList;
 
 /**
  * Created by jonas on 2018-04-12.
+ * Changed by jonas on 2018-04-25.
  */
 public class Board {
-    private JPanel wrapper;
-    private JButton[] buttons;
-    private JButton button1;
-    private JButton button2;
-    private JButton button3;
-    private JButton button4;
-    private JButton button5;
-    private JButton button6;
-    private JButton button7;
-    private JButton button8;
-    private JButton button9;
-    private JLabel currentPlayer;
-    private JLabel turnsLeft;
+    private     JPanel      wrapper;
+    private     JButton[]   buttons;
+    private     JButton     button1;
+    private     JButton     button2;
+    private     JButton     button3;
+    private     JButton     button4;
+    private     JButton     button5;
+    private     JButton     button6;
+    private     JButton     button7;
+    private     JButton     button8;
+    private     JButton     button9;
+    private     JLabel      currentPlayer;
+    private     JLabel      turnsLeft;
+    private     int         piecesLeft;
 
 
-    public Board() {
+    private Board() {
         buttons = new JButton[]{button1, button2, button3, button4, button5, button6, button7, button8, button9};
         for (JButton button : buttons) {
             button.addActionListener(new AL());
             button.setText("-");
         }
+        this.piecesLeft = 6;
     }
 
 
@@ -38,12 +41,21 @@ public class Board {
             Board board = new Board();
             JFrame frame = new JFrame("Board");
             frame.setContentPane(board.wrapper);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             frame.pack();
             frame.setVisible(true);
             board.currentPlayer.setText("X");
-            board.turnsLeft.setText("5");
-            do {} while (!board.check() || Integer.parseInt(board.turnsLeft.getText()) > 0);
+            board.turnsLeft.setText(Integer.toString(board.piecesLeft));
+            boolean running = true;
+            long        t1      =       System.currentTimeMillis();
+            long        t2      =       t1;
+            while (running) {
+                 if(t2 - t1 > 100) {
+                     running = board.check() ^ board.piecesLeft > 0;
+                     t1 = t2;
+                 }
+                 t2 = System.currentTimeMillis();
+             }
             frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 
     }
@@ -67,6 +79,7 @@ public class Board {
         }
         return false;
     }
+
     private ArrayList<ArrayList<String>> getRows() {
         ArrayList<ArrayList<String>> rows = new ArrayList<>(8);
         // Add horizontal rows
@@ -87,7 +100,7 @@ public class Board {
         }
         // Add diagonal rows
         for (int i = 0; i <= 1; i++) {
-            ArrayList<String> row = new ArrayList<>(3);
+            ArrayList<String> row = new ArrayList<>(2);
             for (int j = i*2; j <= 8 - 2*i; j+=4-2*i) {
                 row.add(this.buttons[j].getText());
             }
@@ -113,15 +126,11 @@ public class Board {
                 } else {
                     currentPlayer.setText("X");
                 }
-
-                turnsLeft.setText(Integer.toString(Integer.parseInt(turnsLeft.getText()) - 1));
+                turnsLeft.setText(Integer.toString(--piecesLeft));
 
             } catch (ClassCastException g) {
                 g.printStackTrace();
             }
         }
-
     }
-
-
 }
